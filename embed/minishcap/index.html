@@ -1,28 +1,26 @@
 <!DOCTYPE html>
 <html>
-	<head>
+	<body>
 		<meta charset="UTF-8">
+		<title>Minish Cap</title>
 		<style>
+			/* override browser default */
+/* override browser default */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
 			#webretro-container {
 				width: 100vw;
 				height: 100vh;
 			}
 		</style>
-	</head>
-	<body>
-		<h1>Example webretro embed</h1>
 		<div id="webretro-container"></div>
-		<br>
-		<input type="button" id="fullscreen" value="Fullscreen">
-		<br>
-		<br>
 		
 		<script type="text/javascript"  src="embed.js"></script>
 		<script>
 			var frame = webretroEmbed(document.getElementById("webretro-container"), "/", {core: "mgba", rom: "/Legend of Zelda, The - The Minish Cap (USA).gba"});
-			document.getElementById("fullscreen").onclick = function() {
-				frame.requestFullscreen();
-			};
 		</script>
 	</body>
 </html>
