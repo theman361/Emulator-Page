@@ -1,223 +1,111 @@
+# webretro
+[RetroArch](https://github.com/libretro) ported to WebAssembly with [emscripten](https://emscripten.org/)!
+
+[**Official Instance**](https://binbashbanana.github.io/webretro/)
+
+### Latest version: v6.5
+
+These cores are included pre-built with the repository (ROMs **NOT** included):
+* a5200 (Atari 5200)
+* Beetle NeoPop (Neo-Geo Pocket)
+* Beetle PSX HW (PlayStation)
+* Beetle VB (Virtual Boy)
+* Beetle WonderSwan (WonderSwan)
+* FreeChaF (Fairchild Channel F)
+* FreeIntv (Intellivision)
+* Gearcoleco (ColecoVision)
+* Genesis Plus GX (Sega Systems)
+* Handy (Atari Lynx)
+* melonDS (Nintendo DS)
+* mGBA (GB/GBC/GBA)
+* Mupen64Plus-Next (Nintendo 64)
+* NeoCD (Neo-Geo CD)
+* Nestopia UE (NES)
+* O2EM (Odyssey 2)
+* Opera (3DO)
+* ParaLLEl N64 (Nintendo 64)
+* ProSystem (Atari 7800)
+* Snes9x (SNES)
+* Stella 2014 (Atari 2600)
+* Vecx (Vectrex)
+* Virtual Jaguar (Atari Jaguar)
+* Yabause (Sega Saturn)
+
+## Table of contents
+* [Top](#webretro)
+* [Table of contents](#table-of-contents)
+* [Features](#features)
+* [How to use](#how-to-use)
+* [Embedding](#embedding)
+* [Todo / Planned features](#todo-planned-features)
+* [Building from source](#building-from-source)
+* [Notes](#notes)
+* [Acknowledgements](#acknowledgements)
+
+## Features
+
+* The user can upload their ROM directly, or using Google Drive/Dropbox/OneDrive.
+* Importing/Exporting of save states and SRAM is supported.
+* States and SRAM are saved to indexedDB per ROM name. (SRAM autosaves every 5 minutes by default)
+* ROMs can be inside of zip files (The ROM file name is used in this case, instead of the zip file name).
+* Users can take screenshots, and download them individually, or all at once.
+* Users can recover saves or states from roms that were lost or renamed.
+* Cheat codes are supported.
+* A curated collection of shaders can be used (CRT shaders, ScaleFX, ScaleHQ, xBRZ, various interpolation shaders)
+* SMAS brick fix should automatically be softpatched to SMAS ROMs.
+* The keybinds are remapped so that all the inputs should be supported by a normal keyboard, but can be changed by the user. The default keybinds can be changed on line 12 of `assets/base.js`.
+* Installable PWA with support for the new [file handler API](https://developer.chrome.com/blog/new-in-chrome-102/#file-handlers).
+
+## How to use
+
+The asset bundle will be fetched from GitHub using jsdelivr by default. You can change this option on line 10 and 11 of `assets/base.js` (example alternate value: `"./"`).
+
+Query string options:
+* `core` - specify the libretro core *library* to use, i.e. `genesis_plus_gx`, `mgba`, `mupen64plus_next`, `nestopia`, `snes9x`, etc. `autodetect` can also be used, which attempts to find the correct core for the ROM (slower to load because the core is loaded after the ROM) (if not specified, the user will be shown a list of the default cores).
+* `system` - same as above, but will attempt to detect the core based on the specified system, i.e. `gba`, `genesis`, `nes`, `nintendo 64`, `snes`, etc. If both `core` and `system` are specified, `core` will override `system`.
+* `rom` - will attempt to fetch a ROM from the `./roms/` directory on the server, or an absolute url (including protocol), e.g. `mario3.nes` (if not specified, the user will be prompted to upload a ROM).
+* `nobundle` - skips the bundle fetch.
+* `console` - opens the console window on load.
+* `noautorefocus` - prevents embedded webretro from automatically refocusing the frame.
+* `forcestartbutton` - always show the start button (only if `rom` is also specified).
+
+Example OK query uris:
+* `?core=snes9x&rom=dkc.smc&nobundle&console`
+* `?core=mgba&rom=https://example.com/marioadvance3.zip`
+* `?core=autodetect&rom=supermarioworld.sfc`
+* `?core=autodetect&nobundle`
+* `?core=genesis_plus_gx`
+* `?`
+
+## Embedding
+
+You can easily embed webretro on your site by using the api provided in `embed/embed.js`. You can see an example of it [here](https://binbashbanana.github.io/webretro/embed/embed-example.html).
+
+How to use: `webretroEmbed(domNodeToAppendTo, webretroPath, queries)` (returns the new iframe node that it creates)
+* `domNodeToAppendTo` - the element that you want webretro to load into.
+* `webretroPath` - the path to the index of the webretro instance.
+* `queries` - object containing the query string options shown above.
+
+## Todo / Planned features
+
+Mostly long-term:
+
+* more cores
+* mobile support
+* dynamic linking
+* netplay
+
+## Building from source
+
+[Instructions](./source#readme)
+
+## Notes
 
-<div align = center>
+libretro emscripten support tracker: [spreadsheet](https://docs.google.com/spreadsheets/d/13Lse1ipcUIBb8drVyIl6NKNliW5fFXyfkpJnxb2h1SE)
 
-<img width = 300 src = docs/Logo-light.png#gh-dark-mode-only>
-<img width = 300 src = docs/Logo.png#gh-light-mode-only> 
- 
-<br>
-<br>
+* Mupen64Plus-Next would sometimes encounter a stack overflow error on some games. The stack size has been increased to mitigate this, but it can still happen on some games if left running for long enough. The root cause of the stack overflow has not yet been found. It is still recommended to use this core rather than ParaLLEl N64, because this core has the better renderer. If the issue is too much of a problem, use ParaLLEl N64 instead.
+* Stella (latest) immediately exits on content load for some reason. Stella 2014 is used instead.
 
-[![Badge License]][License]
-    
-    
-Self-hosted **Javascript** emulation for various system.
+## Acknowledgements
 
-<br>
-
-[![Button Website]][Website] 
-[![Button Usage]][Usage]<br>
-[![Button Configurator]][Configurator]<br>
-[![Button Demo]][Demo] 
-[![Button Legacy]][Legacy]
-    
-[![Button Contributors]][Contributors]   
- 
-Join our Discord server:
-
-[![Join our Discord server!](https://invidget.switchblade.xyz/6akryGkETU)](https://discord.gg/6akryGkETU)
-
-</div>
-
-<br>
-
-> [!NOTE]  
-> **As of EmulatorJS version 4.0, this project is no longer a reverse-engineered version of the emulatorjs.com project. It is now a complete re-write.**
-
-> [!WARNING]  
-> As of version 4.0.9 cores and minified files are no longer included in the repository. You will need to get them separately. You can get the from [releases](https://github.com/EmulatorJS/EmulatorJS/releases) or the * new CDN (see [this](#CDN) for more info). There is also a new version system that we will be using. (read [here](#Versioning) for more info).
->
-> The history of the project has been rewritten and force pushed. You will likely need to redo any active commits you have. Sorry for the inconvenience.
-
-> [!TIP]
-> Cloning the repository is no longer recommended for production use. You should use [releases](https://github.com/EmulatorJS/EmulatorJS/releases) or the [CDN](https://cdn.emulatorjs.org/) instead.
-
-<br>
-
-### Ads
-
-*This project has no ads.* <br>
-*Although, the demo page currently has an ad to help fund this project.* <br>
-*Ads on the demo page may come and go depending on how many people are* <br>
-*funding this project.* <br>
-
-*You can help fund this project on* ***[patreon]***
-
-<br>
-
-
-### Issues
-
-*If something doesn't work, please consider opening an* ***[Issue]*** <br>
-*with as many details as possible, as well as the console log.*
-
-<br>
-
-### Versioning
-There are 3 different version name that you need to be aware of:
-1. **stable** - This will be the most stable version of the emulator both code and cores will be tested before release. It will be updated every time a new version is released on GitHub. This is the default version on the Demo.
-2. **latest** - This will contain the latest code but use the stable cores. This will be updated every time the *main* branch is updated.
-3. **nightly** - This will contain the latest code and the latest cores. The cores will be updated every day, so this is consiterd alpha.
-
-### CDN
-There is a new CDN that you can use to get any version of the emulator. The cdn is `https://cdn.emulatorjs.org/`. You can use this to get the stable, latest, nightly and any other main version by setting your `EJS_pathtodata` to `https://cdn.emulatorjs.org/<version>/data/`.
-
-### Extensions
-
- **[GameLibrary]**
-
-   *A library overview for your **ROM** folder.*
-
-<br>
-
-### Development:
-
-*Run a local server with:* 
-```
-npm i
-npm start
-```
-
-<br>
-
-**>> When reporting bugs, please specify that you are using the old version**
-
-<br>
-<br>
-<br>
-
-<h1 align = center>Supported Systems</h1>
-
-<br>
-
-<div align = center>
-
-### Nintendo
-
-**[Game Boy Advance][Nintendo Game Boy Advance]**   | 
-**[Famicom / NES][NES / Famicom]**   | 
-**[Virtual Boy][Virtual Boy]**
-    
-**[Game Boy][Nintendo Game Boy]**   | 
-**[SNES]**   | 
-**[DS][Nintendo DS]**   | 
-**[64][Nintendo 64]**
-
-<br>
-<br>
-
-### Sega
-
-**[Master System][Sega Master System]**   | 
-**[Mega Drive][Sega Mega Drive]**   | 
-**[Game Gear][Sega Game Gear]**
-    
-**[Saturn][Sega Saturn]**   | 
-**[32X][Sega 32X]**   | 
-**[CD][Sega CD]**
-    
-<br>
-<br>
-
-### Atari
-
-**[2600][Atari 2600]**   | 
-**[5200][Atari 5200]**   | 
-**[7800][Atari 7800]**   | 
-**[Lynx][Atari Lynx]**   | 
-**[Jaguar][Atari Jaguar]**
-
-
-<br>
-<br>
-
-### Other
-    
-**[PlayStation]**   | 
-**[Arcade]**   | 
-**[3DO]**   | 
-**[MAME 2003]**
-    
-</div>
-
-<br>
-
-***PSP is not yet supported***. Some of y'all may have seen that I pushed a "beta" ppsspp core, but this core is not ready for daily use. It still crashes randomly and any games that use 3d (so like, all of them) will just have a white screen (and might just crash). Do not open issues related to the "psp" core.
-
-
-<!-- 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 --->
-
-[License]: LICENSE
-[Issue]: https://github.com/ethanaobrien/emulatorjs/issues
-[patreon]: https://patreon.com/EmulatorJS
-
-
-<!-- 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮   Extensions   🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 --->
-
-[GameLibrary]: https://github.com/Ramaerel/emulatorjs-GameLibrary
-
-
-<!-- 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮   Quicklinks   🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 --->
-
-[Configurator]: https://emulatorjs.org/editor.html
-[Contributors]: docs/Contributors.md
-[Website]: https://emulatorjs.org/
-[Legacy]: https://coldcast.org/games/1/Super-Mario-Bros
-[Usage]: https://emulatorjs.org/docs/
-[Demo]: https://demo.emulatorjs.org/
-
-
-<!-- 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮  Systems  🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 -->
-
-[Nintendo Game Boy Advance]: https://emulatorjs.org/systems/Nintendo%20Game%20Boy%20Advance
-[Nintendo Game Boy]: https://emulatorjs.org/systems/Nintendo%20Game%20Boy
-[Nintendo 64]: https://emulatorjs.org/systems/Nintendo%2064
-[Nintendo DS]: https://emulatorjs.org/systems/Nintendo%20DS
-
-[Sega Master System]: https://emulatorjs.org/systems/Sega%20Master%20System
-[Sega Mega Drive]: https://emulatorjs.org/systems/Sega%20Mega%20Drive
-[Sega Game Gear]: https://emulatorjs.org/systems/Sega%20Game%20Gear
-[Sega Saturn]: https://emulatorjs.org/systems/Sega%20Saturn
-[Sega 32X]: https://emulatorjs.org/systems/Sega%2032X
-[Sega CD]: https://emulatorjs.org/systems/Sega%20CD
-
-[Atari Jaguar]: https://emulatorjs.org/systems/Atari%20Jaguar
-[Atari Lynx]: https://emulatorjs.org/systems/Atari%20Lynx
-[Atari 7800]: https://emulatorjs.org/systems/Atari%207800
-[Atari 2600]: https://emulatorjs.org/systems/Atari%202600
-[Atari 5200]: https://emulatorjs.org/systems/Atari%205200
-
-[NES / Famicom]: https://emulatorjs.org/systems/NES-Famicom
-[SNES]: https://emulatorjs.org/systems/SNES
-
-[TurboGrafs-16 / PC Engine]: https://emulatorjs.org/systems/TurboGrafx-16
-[WanderSwan / Color]: https://emulatorjs.org/systems/WonderSwan
-[Neo Geo Poket]: https://emulatorjs.org/systems/Neo%20Geo%20Pocket
-[PlayStation]: https://emulatorjs.org/systems/PlayStation
-[Virtual Boy]: https://emulatorjs.org/systems/Virtual%20Boy
-[Arcade]: https://emulatorjs.org/systems/Arcade
-[MSX]: https://emulatorjs.org/systems/MSX
-[3DO]: https://emulatorjs.org/systems/3DO
-[MAME 2003]: https://emulatorjs.org/systems/MAME%202003
-
-
-<!-- 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮  Badges  🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 🎮 --->
-
-[Badge License]: https://img.shields.io/badge/License-GPLv3-blue.svg?style=for-the-badge
-
-[Button Configurator]: https://img.shields.io/badge/Configurator-992cb3?style=for-the-badge
-[Button Contributors]: https://img.shields.io/badge/Contributors-54b7dd?style=for-the-badge
-[Button Website]: https://img.shields.io/badge/Website-736e9b?style=for-the-badge
-[Button Legacy]: https://img.shields.io/badge/Legacy-ab910b?style=for-the-badge
-[Button Usage]: https://img.shields.io/badge/Usage-2478b5?style=for-the-badge
-[Button Demo]: https://img.shields.io/badge/Demo-528116?style=for-the-badge
-[Button Beta]: https://img.shields.io/badge/Beta-bb044f?style=for-the-badge
+Extra thanks to [ToadKing](https://github.com/ToadKing) for the initial port of RetroArch to emscripten, including rweb drivers as well as libco support.
