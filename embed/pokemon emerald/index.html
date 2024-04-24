@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Kirby</title>
+		<style>
+/* override browser default */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+			#webretro-container {
+				width: 100vw;
+				height: 100vh;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="webretro-container"></div>
+		<script type="text/javascript"  src="embed.js"></script>
+		<script>
+			var frame = webretroEmbed(document.getElementById("webretro-container"), "/", {core: "mgba", rom: "/Pokemon - Emerald Version (USA, Europe).gba"});
+			document.getElementById("fullscreen").onclick = function() {
+				frame.requestFullscreen();
+			};
+		</script>
+	</body>
+</html>
