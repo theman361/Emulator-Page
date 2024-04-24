@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<meta charset="UTF-8">
+		<title>Minish Cap</title>
+		<style>
+			/* override browser default */
+/* override browser default */
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+			#webretro-container {
+				width: 100vw;
+				height: 100vh;
+			}
+		</style>
+		<div id="webretro-container"></div>
+		
+		<script type="text/javascript"  src="embed.js"></script>
+		<script>
+			var frame = webretroEmbed(document.getElementById("webretro-container"), "/", {system: "nintendo 64", rom: "/Paper Mario (USA).zip"});
+		</script>
+	</body>
+</html>
