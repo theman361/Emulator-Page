@@ -1,0 +1,43 @@
+function off(linkID) {
+	document.getElementById("menuTip").style.display = "none";
+	document.images['logo'].style.opacity = 1;
+}
+
+function on(text) {
+	document.getElementById("menuTip2").innerHTML = text;
+	document.images['logo'].style.opacity = .5;
+	document.getElementById("menuTip").style.display = "";
+}
+
+function setHeaderAd() {
+	if (window.innerWidth > 990) {
+		// Move ad to headerAdContainerFixed
+		var oldParent = document.getElementById('headerAdContainerInline');
+		var newParent = document.getElementById('headerAdContainerFixed');
+	} else {
+		// Move ad to headerAdContainerInline
+		var oldParent = document.getElementById('headerAdContainerFixed');
+		var newParent = document.getElementById('headerAdContainerInline');
+	}
+	if (oldParent != null && newParent != null && oldParent.childNodes.length > 0) {
+		while (oldParent.childNodes.length) {
+			if (oldParent.firstChild.classList && oldParent.firstChild.classList.contains("adsbygoogle")) {
+				if (window.innerWidth >= 750) {
+					oldParent.firstChild.dataset.adFormat = 'horizontal';
+					oldParent.firstChild.dataset.fullWidthResponseive = 'false';
+					oldParent.firstChild.style.height = '90px';
+					oldParent.firstChild.style.maxHeight = '90px';
+				} else {
+					oldParent.firstChild.dataset.adFormat = 'auto';
+					oldParent.firstChild.dataset.fullWidthResponsive = 'true';
+					oldParent.firstChild.style.height = '250px';
+					oldParent.firstChild.style.maxHeight = '250px';
+				}
+			}
+			newParent.appendChild(oldParent.firstChild);
+		}
+	}
+}
+
+window.addEventListener('resize', setHeaderAd);
+window.addEventListener('DOMContentLoaded', setHeaderAd);

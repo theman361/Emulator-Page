@@ -1,0 +1,177 @@
+<!--
+var offsetX;
+var offsetY;
+var tooltip;
+var emulator;
+var timeoutVar;
+
+function buildTooltip(theLink, id, width, height) {
+  timeoutVar = setTimeout(function(){ loadTooltip(id, width, height) }, 800);
+  theLink.onmouseout = hideTooltip;
+  theLink.onmousemove = moveTooltip;
+  theLink.onclick = function() { clearTimeout(timeoutVar) };
+  offsetX = -1 * Math.ceil(width / 2);
+  offsetY = -12 - height;
+  tooltip = document.getElementById("tooltip");
+  if (tooltip == null) {
+    tooltip = document.createElement("div");
+    tooltip.id = "tooltip";
+    tooltip.style.cssText = "position:fixed; z-index:100; display:block; opacity:0; visibility:hidden; background-color:black";
+    document.body.appendChild(tooltip);
+  }
+}
+
+function loadTooltip(id, width, height) {
+  tooltip.innerHTML = "<table border=\"1\" cellpadding=\"0\" cellspacing=\"0\"><tr><td><div style=\"width:" + width + "px; height:" + height + "px; overflow: hidden\"><img src=\"/image.php?type=screen&amp;id=" + id + "\" style=\"border:0px\" alt=\"\"></div></td></tr></table>";
+  timeoutVar = setTimeout(function(){ showTooltip() }, 200);
+}
+
+function showTooltip() {
+  tooltip.style.opacity = '1';
+  tooltip.style.transition = 'opacity .2s';
+  tooltip.style.visibility = 'visible';
+}
+
+function hideTooltip(e) {
+  clearTimeout(timeoutVar);
+  tooltip.style.opacity = '0';
+  tooltip.style.visibility = 'hidden';
+}
+
+function showInstructiontip(theLink, e) {
+  tooltip = document.getElementById("instructiontip");
+  emulator = document.getElementById("emulator");
+  if (!e) // For IE.
+    e = window.event;
+  theLink.onmouseout = hideInstructiontip;
+  tooltip.style.top = '80px';
+  tooltip.style.left = eval(getPosX(e) - 150) + 'px';
+  emulator.style.visibility = 'hidden';
+  tooltip.style.visibility = 'visible';
+}
+
+function hideInstructiontip(e) {
+  tooltip.style.visibility = 'hidden';
+  emulator.style.visibility = 'visible';
+  emulator.requestFocus();
+}
+
+function moveTooltip(e) {
+  if (!e) // For IE.
+    e = window.event;
+  var posx = getPosX(e);
+  var posy = getPosY(e);
+  var scrollY = (window.pageYOffset) ? window.pageYOffset : (document.documentElement && document.documentElement.scrollTop) ? document.documentElement.scrollTop : document.body.scrollTop;
+  tooltip.style.top = eval(posy + offsetY - scrollY > 0 ? posy + offsetY : posy + 25) + 'px';
+  tooltip.style.left = eval(posx + offsetX) + 'px';
+}
+
+// Utility functions
+
+function getPosX(e) {
+  if (e.pageX)
+    return e.pageX;
+  else if (e.clientX)
+    return e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+  else
+    return 0;
+}
+
+function getPosY(e) {
+  if (e.pageY)
+    return e.pageY;
+  else if (e.clientY)
+    return e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+  else
+    return 0;
+}
+
+function ManualByID(id, destDPI) {
+	if (destDPI == undefined)
+		destDPI = 95
+	url = "/manual/manual.php?id=" + id + "&destDPI=" + destDPI;
+	settings = "width=300, height=300, left=0, top=0, resizable=0, scrollbars=0";
+	manualwin = window.open(url, 'manualwin', settings);
+	manualwin.focus();
+}
+
+// Game Scans
+function productPopup(id, width, height, page) {
+	var popup = buildPopup(null);
+
+	document.getElementById('productImageTable').style.backgroundImage = "url('/image.php?type=cart&id=" + id + "&page=" + page + "')";
+	document.images['productImage'].style.width = '' + width + 'px';
+	document.images['productImage'].style.height = '' + height + 'px';
+	document.getElementById('popImageTable').style.display = 'flex';
+}
+
+// Full-size cover
+function coverPopup(id, width, height, source, sourceUrl) {
+	buildPopup2('Cover by <a href="' + sourceUrl + '">' + source + '</a> ');
+
+	document.images['productImage'].src = "/image.php?type=box_large&id=" + id;
+
+	document.getElementById('popImageTable').style.display = 'flex';
+}
+
+function buildPopup(footer) {
+	var popup = document.getElementById("popImageTable");
+	if (popup == null) {
+		popup = document.createElement("div");
+		popup.id = "popImageTable";
+		popup.style.cssText = "position:fixed; width:100%; height:100%; left:0px; top:0px; display:none; justify-content:center; align-items:center; background-color:rgba(0,0,0,0.75)";
+		popup.addEventListener("click", function() { this.style.display = 'none' }); 
+		document.body.appendChild(popup);
+
+		document.addEventListener('keydown', function(event) {
+			var evt = event || window.event;
+			if (evt.keyCode == 27) {
+				document.getElementById('popImageTable').style.display = 'none';
+			}
+		});
+	}
+	var tableHTML = '<table id="productImageTable" border="1" style="align-self:center"><tr><td><img id="productImage" style="display:block" src="/images/clear.gif" alt=""></td></tr>';
+	if (footer != null) {
+		tableHTML += '<tr><td style="text-align:right; background-color:black; padding-right:4px">' + footer + '</td></tr>';
+	}
+	tableHTML += '</table>';
+	popup.innerHTML = tableHTML;
+}
+
+function buildPopup2(footer) {
+	var popup = document.getElementById("popImageTable");
+	if (popup == null) {
+		popup = document.createElement("div");
+		popup.id = "popImageTable";
+		popup.style.cssText = "position:fixed; width:100%; height:100%; left:0px; top:0px; display:none; justify-content:center; align-items:center; background-color:rgba(0,0,0,0.75)";
+		popup.addEventListener("click", function() { this.style.display = 'none' }); 
+		document.body.appendChild(popup);
+
+		document.addEventListener('keydown', function(event) {
+			var evt = event || window.event;
+			if (evt.keyCode == 27) {
+				document.getElementById('popImageTable').style.display = 'none';
+			}
+		});
+	}
+	var tableHTML = '<img id="productImage" style="max-width:100%; max-height:100%; object-fit:contain; border:1px solid silver" title="" />';
+	popup.innerHTML = tableHTML;
+}
+
+
+function showSearch(theElement) {
+	if (theElement.style.display == 'none') {
+		theElement.style.display = '';
+		theElement.focus();
+		return false;
+	}
+	return true;
+}
+
+function blurSearch(theElement) {
+	if (theElement.style.display == '' && theElement.value.length == 0) {
+		theElement.style.display = 'none';
+	}
+}
+
+// -->
